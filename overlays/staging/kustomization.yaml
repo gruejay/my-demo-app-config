@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+
+namespace: my-demo-app-staging
+
+images:
+  - name: gruejay/k8s-demo-flask-app
+    newTag: 0.0.2
+
+configMapGenerator:
+- name: flask-app-config
+  behavior: merge
+  literals:
+  - FLASK_ENV=staging
+
+

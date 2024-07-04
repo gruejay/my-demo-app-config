@@ -27,7 +27,7 @@ jobs:
 
     - name: Login to ArgoCD
       run: |
-        argocd login --insecure --grpc-web k8s.gruejay.com  --grpc-web-root-path=/argocd --username admin --password ${{ secrets.ARGO_PASSWORD }}
+        argocd login --insecure --grpc-web k8s.gruejay.com  --grpc-web-root-path=/argocd --username admin --password "${{ secrets.ARGO_PASSWORD }}"
 
     - name: Deploy to Staging
       run: |
@@ -62,7 +62,7 @@ jobs:
 
     - name: Login to ArgoCD
       run: |
-        argocd login --insecure --grpc-web k8s.gruejay.com  --grpc-web-root-path=/argocd --username admin --password ${{ secrets.ARGO_PASSWORD }} --insecure
+        argocd login --insecure --grpc-web k8s.gruejay.com  --grpc-web-root-path=/argocd --username admin --password "${{ secrets.ARGO_PASSWORD }}"
 
     - name: Deploy to Staging
       run: |

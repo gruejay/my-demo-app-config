@@ -12,11 +12,14 @@ images:
 
 patches:
   - target:
-      group: networking.k8s.io
       version: v1
-      kind: Ingress
-      name: flask-app-ingress
-    path: patches/ingress.yaml
+      kind: Service
+      name: flask-app-service
+    patch: |-
+      - op: add
+        path: /spec/type
+        value: LoadBalancer
+
 
 configMapGenerator:
 - name: flask-app-config

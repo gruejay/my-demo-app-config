@@ -1,3 +1,12 @@
 - op: replace
   path: /spec/rules/0/http/paths/0/path
   value: /demo-app-staging(/|$)(.*)
+- op: add
+  path: /metadata/annotations/kubernetes.io~1ingress.class
+  value: nginx
+- op: add
+  path: /metadata/annotations/nginx.ingress.kubernetes.io~1ssl-redirect
+  value: "false"
+- op: add
+  path: /metadata/annotations/nginx.ingress.kubernetes.io~1rewrite-target
+  value: /$2

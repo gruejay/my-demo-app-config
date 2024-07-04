@@ -31,7 +31,7 @@ jobs:
 
     - name: Deploy to Staging
       run: |
-        argocd app sync flask-app-staging --prune
+        argocd app sync staging-my-demo-app --prune
 
   run-e2e-tests-staging:
     needs: deploy-staging

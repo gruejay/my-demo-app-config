@@ -37,7 +37,12 @@ jobs:
     needs: deploy-staging
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TS_CLIENT }}
+        oauth-secret: ${{ secrets.TS_SECRET }}
+        tags: tag:gha
 
     - name: Run E2E Tests
       run: curl --silent --show-error --location --head --fail-with-body http://k8s.gruejay.com/demo-app-staging 
@@ -72,6 +77,12 @@ jobs:
     needs: deploy-production
     runs-on: ubuntu-latest
     steps:
+    - name: Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TS_CLIENT }}
+        oauth-secret: ${{ secrets.TS_SECRET }}
+        tags: tag:gha
 
     - name: Run E2E Tests
       run: curl --silent --show-error --location --head --fail-with-body http://k8s.gruejay.com/demo-app-prod

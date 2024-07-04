@@ -8,7 +8,7 @@ namespace: my-demo-app-production
 
 images:
   - name: gruejay/k8s-demo-flask-app
-    newTag: 0.0.2
+    newTag: 1.2.0
 
 patches:
   - target:

@@ -10,6 +10,14 @@ images:
   - name: gruejay/k8s-demo-flask-app
     newTag: 1.2.0
 
+patches:
+  - target:
+      group: networking.k8s.io
+      version: v1
+      kind: Ingress
+      name: flask-app-ingress
+    path: patches/ingress.yaml
+
 configMapGenerator:
 - name: flask-app-config
   behavior: merge

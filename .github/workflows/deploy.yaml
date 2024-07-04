@@ -1,0 +1,79 @@
+name: Deploy with ArgoCD
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+
+jobs:
+  deploy-staging:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+
+    - name: Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TS_CLIENT }}
+        oauth-secret: ${{ secrets.TS_SECRET }}
+        tags: tag:gha
+      
+    - name: Install ArgoCD CLI
+      run: |
+        curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        chmod +x argocd
+        sudo mv argocd /usr/local/bin/
+
+    - name: Login to ArgoCD
+      run: |
+        argocd login --insecure --grpc-web k8s.gruejay.com  --grpc-web-root-path=/argocd --username admin --password ${{ secrets.ARGO_PASSWORD }}
+
+    - name: Deploy to Staging
+      run: |
+        argocd app sync flask-app-staging --prune
+
+  run-e2e-tests-staging:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run E2E Tests
+      run: curl --silent --show-error --location --head --fail-with-body http://k8s.gruejay.com/demo-app-staging 
+
+  deploy-production:
+    needs: run-e2e-tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TS_CLIENT }}
+        oauth-secret: ${{ secrets.TS_SECRET }}
+        tags: tag:gha
+      
+    - name: Install ArgoCD CLI
+      run: |
+        curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        chmod +x argocd
+        sudo mv argocd /usr/local/bin/
+
+    - name: Login to ArgoCD
+      run: |
+        argocd login --insecure --grpc-web k8s.gruejay.com  --grpc-web-root-path=/argocd --username admin --password ${{ secrets.ARGO_PASSWORD }} --insecure
+
+    - name: Deploy to Staging
+      run: |
+        argocd app sync production-my-demo-app --prune
+
+  run-e2e-tests-production:
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Run E2E Tests
+      run: curl --silent --show-error --location --head --fail-with-body http://k8s.gruejay.com/demo-app-prod
+

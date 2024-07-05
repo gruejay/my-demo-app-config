@@ -71,7 +71,11 @@ jobs:
       run: |
         argocd login --insecure --grpc-web k8s.gruejay.com  --grpc-web-root-path=/argocd --username admin --password "${{ secrets.ARGO_PASSWORD }}"
 
+    - name: Check argoCD diff
+      run: argocd app diff production-my-demo-app >> $GITHUB_OUTPUT
+
     - name: Deploy to prod
+      if: steps.diff_check.outputs.diff_result == '0'
       run: |
         argocd app sync production-my-demo-app --prune
         argocd app wait production-my-demo-app
@@ -88,5 +92,5 @@ jobs:
         tags: tag:gha
 
     - name: Run E2E Tests
-      run: curl --silent --show-error --location --head --fail-with-body http://k8s.gruejay.com/demo-app-prod
+      run: curl --silent --show-error --location --head --fail-with-body http://10.0.10.237/demo-app-prod
 

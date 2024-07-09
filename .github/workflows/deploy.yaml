@@ -74,7 +74,7 @@ jobs:
     - name: Check argoCD diff
       id: diff_check
       run: |
-        argocd app diff production-my-demo-app >> $GITHUB_OUTPUT
+        argocd app diff production-my-demo-app
         echo "diff_result=$?" >> $GITHUB_OUTPUT
 
     - name: Deploy to prod

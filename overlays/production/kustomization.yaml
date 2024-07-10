@@ -21,8 +21,8 @@ patches:
         value: LoadBalancer
   - target:
       version: v1
-      kind: Service
-      name: flask-app-service
+      kind: Ingress
+      name: flask-app-ingress
     patch: |-
       - op: add
         path: /spec/ingressClassName
